@@ -20,13 +20,16 @@ router.get('/', authenticateToken, async (req, res) => {
 router.post('/login', (req, res) => {
     const username = req.body.username;
     const user = { name: username };
-    const secretKey = process.env.ACCESS_TOKEN_SECRET || 'default-token';
-    const accessToken = jwt.sign(user, secretKey);
+
+    const accessToken = generateAccessToken(user);
     res.json({ accessToken: accessToken });
 })
 
-router.post('/register', (req, res) => {
 
-})
+const generateAccessToken = (user: any) => {
+    const secretKey = process.env.ACCESS_TOKEN_SECRET || 'default-token';
+    return jwt.sign(user, secretKey, { expiresIn: '15s' });
+}
+
 
 export { router }
