@@ -19,3 +19,5 @@ REFRESH_TOKEN_SECRET=yourCustomRefreshToken
 
 And DONE!
 Simple like that (I hope)
+
+Oh, I almost forgot, run "npm run start" to make things happen!
