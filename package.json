@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsnd --transpile-only --respawn --ignore-watch node_modules src/server.ts"
+    "start": "nodemon src/server.ts"
   },
   "repository": {
     "type": "git",
@@ -14,6 +14,7 @@
   "author": "Gustavo Valle",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^3.6.0",
     "@types/jsonwebtoken": "^8.5.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
