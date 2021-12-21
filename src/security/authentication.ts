@@ -15,3 +15,9 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
         next();
     })
 }
+
+
+export const generateAccessToken = (user: Object) => {
+    const secretKey = process.env.ACCESS_TOKEN_SECRET || 'default-token';
+    return jwt.sign(user, secretKey, { expiresIn: '86400s' });
+}
