@@ -1,5 +1,6 @@
 import express from 'express';
-import { homeRoute, userRoute } from './routes';
+import { router as userRoute } from './controller/userController';
+import { router as homeRoute } from './controller/homeController';
 
 const app = express();
 
