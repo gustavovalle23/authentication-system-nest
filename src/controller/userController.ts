@@ -31,6 +31,14 @@ router.post('/register', async (request, response) => {
 
     const prisma = new PrismaClient();
 
+    const user = await prisma.user.findFirst({
+        where: { email: email }
+    });
+
+    if (user) {
+        return response.status(400).json({'message': 'Usuário já cadastrado!'});
+    }
+
     await prisma.user.create({
         data: {
             name: name,
