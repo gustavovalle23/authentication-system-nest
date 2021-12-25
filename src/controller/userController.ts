@@ -1,12 +1,31 @@
 import { Router } from "express";
-import { PrismaClient } from '@prisma/client';
+import prisma from "../data/prisma";
 import { authenticateToken, generateAccessToken } from '../security/authentication';
 
 
 const router = Router();
 
-router.get('/users', authenticateToken, async (request, response) => {
-    const prisma = new PrismaClient();
+router.get('/user/:userId', async (request, response) => {
+    console.log('Request to "/user"')
+
+    const userId = +request.params.userId;
+    if (isNaN(userId)) {
+        return response.status(400).send({ message: 'Id must be a integer!' })
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    })
+
+    if (!user) {
+        return response.status(400).send({ message: 'User not found!' })
+    }
+
+
+    return response.status(200).send(user);
+})
+
+router.get('/user/all', authenticateToken, async (request, response) => {
     const users = await prisma.user.findMany({
         select: {
             id: true,
@@ -24,19 +43,17 @@ router.get('/users', authenticateToken, async (request, response) => {
 })
 
 
-router.post('/register', async (request, response) => {
+router.post('/user/register', async (request, response) => {
     const email = request.body.email;
     const name = request.body.name;
     const password = request.body.password;
-
-    const prisma = new PrismaClient();
 
     const user = await prisma.user.findFirst({
         where: { email: email }
     });
 
     if (user) {
-        return response.status(400).json({'message': 'User already registered!'});
+        return response.status(400).json({ message: 'User already registered!' });
     }
 
     await prisma.user.create({
@@ -51,8 +68,7 @@ router.post('/register', async (request, response) => {
 })
 
 
-router.post('/login', async (req, res) => {
-    const prisma = new PrismaClient();
+router.post('/user/authenticate', async (req, res) => {
 
     const email = req.body.email;
     const password = req.body.password;
@@ -64,7 +80,7 @@ router.post('/login', async (req, res) => {
     });
 
     if (!user || !user.password === password) {
-        return res.status(401).send('email or password incorret(s)')
+        return res.status(401).send({ message: 'email or password incorret(s)' })
     }
 
     const accessToken = generateAccessToken(user);
