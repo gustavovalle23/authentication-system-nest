@@ -36,7 +36,7 @@ router.post('/register', async (request, response) => {
     });
 
     if (user) {
-        return response.status(400).json({'message': 'Usuário já cadastrado!'});
+        return response.status(400).json({'message': 'User already registered!'});
     }
 
     await prisma.user.create({
