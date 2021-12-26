@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findUserByEmail, findUserById, findUsersAll, saveUser } from "../repository/userRepository";
+import { deleteUserById, findUserByEmail, findUserById, findUsersAll, saveUser } from "../repository/userRepository";
 import { authenticateToken, generateAccessToken } from '../security/authentication';
 
 
@@ -10,11 +10,16 @@ router.get('/user/all', authenticateToken, async (request, response) => {
     const users = await findUsersAll();
 
     return response.json(users).status(200).send();
+});
+
+
+router.delete('/user/:userId', authenticateToken, async (request, response) => {
+    await deleteUserById(+request.params.userId);
 })
 
 
 router.get('/user/:userId', authenticateToken, async (request, response) => {
-    console.log('Request to "/user"');
+    console.log(`Request to "/user" ${request.params.userId}`);
 
     const userId = +request.params.userId;
     if (isNaN(userId)) {
@@ -26,7 +31,6 @@ router.get('/user/:userId', authenticateToken, async (request, response) => {
     if (!user) {
         return response.status(400).send({ message: 'User not found!' });
     }
-
 
     return response.status(200).send(user);
 })
