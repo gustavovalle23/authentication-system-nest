@@ -13,7 +13,7 @@ router.get('/user/all', authenticateToken, async (request, response) => {
 })
 
 
-router.get('/user/:userId', async (request, response) => {
+router.get('/user/:userId', authenticateToken, async (request, response) => {
     console.log('Request to "/user"');
 
     const userId = +request.params.userId;
