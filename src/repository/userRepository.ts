@@ -1,10 +1,12 @@
 import { user } from "@prisma/client";
 import prisma from "../../prisma/prisma";
+import { userDTO } from "../shared/userDTO";
 
 export const findUserById = async (userId: number): Promise<user> => {
-    return prisma.user.findUnique({
+    const user = prisma.user.findUnique({
         where: { id: userId }
     })
+    return user;
 };
 
 export const saveUser = async (name: string, email: string, password: string) => {
@@ -16,8 +18,11 @@ export const saveUser = async (name: string, email: string, password: string) =>
             role: "USER"
         }
     })
-}
+};
 
+export const deleteUserById = async (userId: number) => {
+    prisma.user.delete({ where: { id: userId } });
+}
 
 export const findUserByEmail = async (userEmail: string): Promise<user> => {
     return prisma.user.findFirst({
@@ -25,8 +30,8 @@ export const findUserByEmail = async (userEmail: string): Promise<user> => {
     });
 }
 
-export const findUsersAll = async (): Promise<user> => {
-    return prisma.user.findMany({
+export const findUsersAll = async (): Promise<Array<userDTO>> => {
+    let user = prisma.user.findMany({
         select: {
             id: true,
             name: true,
@@ -37,5 +42,7 @@ export const findUsersAll = async (): Promise<user> => {
         where: {
             role: "USER"
         }
-    })
+    });
+
+    return user;
 };
