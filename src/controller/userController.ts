@@ -6,50 +6,50 @@ import { authenticateToken, generateAccessToken } from '../security/authenticati
 const router = Router({});
 
 
-router.get('/user/all', authenticateToken, async (request, response) => {
+router.get('/user/all', authenticateToken, async (req, res) => {
     const users = await findUsersAll();
 
-    return response.json(users).status(200).send();
+    return res.json(users).status(200).send();
 });
 
 
-router.delete('/user/:userId', authenticateToken, async (request, response) => {
-    await deleteUserById(+request.params.userId);
+router.delete('/user/:userId', authenticateToken, async (req, res) => {
+    await deleteUserById(+req.params.userId);
 })
 
 
-router.get('/user/:userId', authenticateToken, async (request, response) => {
-    console.log(`Request to "/user" ${request.params.userId}`);
+router.get('/user/:userId', authenticateToken, async (req, res) => {
+    console.log(`request to "/user" ${req.params.userId}`);
 
-    const userId = +request.params.userId;
+    const userId = +req.params.userId;
     if (isNaN(userId)) {
-        return response.status(400).send({ message: 'Id must be a integer!' });
+        return res.status(400).send({ message: 'Id must be a integer!' });
     }
 
     const user = await findUserById(userId);
 
     if (!user) {
-        return response.status(400).send({ message: 'User not found!' });
+        return res.status(400).send({ message: 'User not found!' });
     }
 
-    return response.status(200).send(user);
+    return res.status(200).send(user);
 })
 
 
-router.post('/user/register', async (request, response) => {
-    const email = request.body.email;
-    const name = request.body.name;
-    const password = request.body.password;
+router.post('/user/register', async (req, res) => {
+    const email = req.body.email;
+    const name = req.body.name;
+    const password = req.body.password;
 
     const user = await findUserByEmail(email);
 
     if (user) {
-        return response.status(400).json({ message: 'User already registered!' });
+        return res.status(400).json({ message: 'User already registered!' });
     }
 
     saveUser(name, email, password);
 
-    return response.status(201).send();
+    return res.status(201).send();
 })
 
 
